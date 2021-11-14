@@ -12,26 +12,45 @@ use Countable;
 
 class ArrayValues extends Lazy implements ArrayAccess, Countable, IteratorAggregate
 {
-    public function __construct(protected array $values = [])
+    protected array $values = [];
+
+    public function __construct(array $values = [])
     {
+        $this->values = $values;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return array
+     */
+    public function __invoke(Container $container) : array
     {
         return $this->resolveValues($container, $this->values);
     }
 
-    public function offsetExists(mixed $offset) : bool
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset) : bool
     {
         return array_key_exists($offset, $this->values);
     }
 
-    public function offsetGet(mixed $offset) : mixed
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
     {
         return $this->values[$offset];
     }
 
-    public function offsetSet(mixed $offset, mixed $value) : void
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value) : void
     {
         if ($offset === null) {
             $this->values[] = $value;
@@ -40,7 +59,10 @@ class ArrayValues extends Lazy implements ArrayAccess, Countable, IteratorAggreg
         }
     }
 
-    public function offsetUnset(mixed $offset) : void
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset) : void
     {
         unset($this->values[$offset]);
     }
@@ -77,7 +99,12 @@ class ArrayValues extends Lazy implements ArrayAccess, Countable, IteratorAggreg
         return $return;
     }
 
-    protected function resolveValue(Container $container, mixed $value) : mixed
+    /**
+     * @param Container $container
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function resolveValue(Container $container, $value)
     {
         if ($value instanceof Lazy) {
             return $value($container);

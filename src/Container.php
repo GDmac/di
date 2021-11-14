@@ -12,14 +12,16 @@ class Container implements ContainerInterface
     protected array $has = [];
 
     protected array $registry = [];
+    protected Definitions $definitions;
 
     /**
      * @param Provider[] $providers
      */
     public function __construct(
-        protected Definitions $definitions,
+        Definitions $definitions,
         iterable $providers = []
     ) {
+        $this->definitions = $definitions;
         foreach ($providers as $provider) {
             $provider->provide($this->definitions);
         }
@@ -27,7 +29,11 @@ class Container implements ContainerInterface
         $this->registry[static::CLASS] = $this;
     }
 
-    public function get(string $id) : mixed
+    /**
+     * @param string $id
+     * @return mixed
+     */
+    public function get(string $id)
     {
         if (! isset($this->registry[$id])) {
             $this->registry[$id] = $this->new($id);
@@ -68,7 +74,11 @@ class Container implements ContainerInterface
         return $reflection->isInstantiable();
     }
 
-    public function new(string $id) : mixed
+    /**
+     * @param string $id
+     * @return mixed
+     */
+    public function new(string $id)
     {
         return Lazy::resolveArgument($this, $this->definitions->$id);
     }

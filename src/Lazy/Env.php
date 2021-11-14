@@ -8,13 +8,27 @@ use Capsule\Di\Exception;
 
 class Env extends Lazy
 {
+    protected string $varname;
+    protected ?string $vartype = null;
+
+    /**
+     * @param string $varname
+     * @param string|null $vartype
+     */
     public function __construct(
-        protected string $varname,
-        protected ?string $vartype = null
+        string $varname,
+        ?string $vartype = null
     ) {
+        $this->vartype = $vartype;
+        $this->varname = $varname;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     * @throws Exception\NotDefined
+     */
+    public function __invoke(Container $container)
     {
         $value = $this->getEnv();
 
@@ -25,6 +39,10 @@ class Env extends Lazy
         return $value;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception\NotDefined
+     */
     protected function getEnv() : string
     {
         $env = getenv();

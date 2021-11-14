@@ -21,7 +21,11 @@ abstract class LazyTest extends \PHPUnit\Framework\TestCase
         return new Definitions();
     }
 
-    protected function actual(Lazy $lazy) : mixed
+    /**
+     * @param \Capsule\Di\Lazy\Lazy $lazy
+     * @return mixed
+     */
+    protected function actual(Lazy $lazy)
     {
         return $lazy($this->container);
     }

@@ -7,11 +7,24 @@ use Capsule\Di\Container;
 
 class RequireFile extends Lazy
 {
-    public function __construct(protected string|Lazy $file)
+    /**
+     * @var Lazy|string
+     */
+    protected $file;
+
+    /**
+     * @param string|Lazy $file
+     */
+    public function __construct($file)
     {
+        $this->file = $file;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         $arguments = static::resolveArguments($container, [$this->file]);
         return require $arguments[0];

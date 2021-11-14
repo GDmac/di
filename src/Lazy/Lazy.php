@@ -19,10 +19,15 @@ abstract class Lazy
         return $arguments;
     }
 
+    /**
+     * @param Container $container
+     * @param mixed $argument
+     * @return mixed
+     */
     static public function resolveArgument(
         Container $container,
-        mixed $argument
-    ) : mixed
+        $argument
+    )
     {
         if ($argument instanceof Lazy) {
             return $argument($container);
@@ -31,5 +36,9 @@ abstract class Lazy
         return $argument;
     }
 
-    abstract public function __invoke(Container $container) : mixed;
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    abstract public function __invoke(Container $container);
 }

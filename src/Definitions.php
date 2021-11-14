@@ -9,7 +9,12 @@ use stdClass;
 
 class Definitions extends stdClass
 {
-    public function __get(string $id) : mixed
+    /**
+     * @param string $id
+     * @return mixed
+     * @throws Exception\NotFound
+     */
+    public function __get(string $id)
     {
         $definition = $this->newDefinition($id);
 
@@ -21,6 +26,9 @@ class Definitions extends stdClass
         return $this->$id;
     }
 
+    /**
+     * @throws Exception\NotFound
+     */
     public function newDefinition(string $type) : ?Definition
     {
         if (interface_exists($type)) {
@@ -44,12 +52,20 @@ class Definitions extends stdClass
         return new Lazy\Call($callable);
     }
 
-    public function callableGet(string|AnyLazy $id) : Lazy\CallableGet
+    /**
+     * @param string|AnyLazy $id
+     * @return Lazy\CallableGet
+     */
+    public function callableGet($id) : Lazy\CallableGet
     {
         return new Lazy\CallableGet($id);
     }
 
-    public function callableNew(string|AnyLazy $id) : Lazy\CallableNew
+    /**
+     * @param string|AnyLazy $id
+     * @return Lazy\CallableNew
+     */
+    public function callableNew($id) : Lazy\CallableNew
     {
         return new Lazy\CallableNew($id);
     }
@@ -64,60 +80,99 @@ class Definitions extends stdClass
         return new Lazy\Env($varname, $vartype);
     }
 
+    /**
+     * @param string $function
+     * @param mixed ...$arguments
+     * @return Lazy\FunctionCall
+     */
     public function functionCall(
         string $function,
-        mixed ...$arguments
+        ...$arguments
     ) : Lazy\FunctionCall
     {
         return new Lazy\FunctionCall($function, $arguments);
     }
 
-    public function get(string|AnyLazy $id) : Lazy\Get
+    /**
+     * @param string|AnyLazy $id
+     * @return Lazy\Get
+     */
+    public function get($id) : Lazy\Get
     {
         return new Lazy\Get($id);
     }
 
+    /**
+     * @param string|AnyLazy $class
+     * @param string $method
+     * @param mixed ...$arguments
+     * @return Lazy\GetCall
+     */
     public function getCall(
-        string|AnyLazy $class,
+        $class,
         string $method,
-        mixed ...$arguments
+        ...$arguments
     ) : Lazy\GetCall
     {
         return new Lazy\GetCall($class, $method, $arguments);
     }
 
-    public function new(string|AnyLazy $id) : Lazy\NewInstance
+    /**
+     * @param string|AnyLazy $id
+     * @return Lazy\NewInstance
+     */
+    public function new($id) : Lazy\NewInstance
     {
         return new Lazy\NewInstance($id);
     }
 
+    /**
+     * @param string|AnyLazy $class
+     * @param string $method
+     * @param mixed ...$arguments
+     * @return Lazy\NewCall
+     */
     public function newCall(
-        string|AnyLazy $class,
+        $class,
         string $method,
-        mixed ...$arguments
+        ...$arguments
     ) : Lazy\NewCall
     {
         return new Lazy\NewCall($class, $method, $arguments);
     }
 
+    /**
+     * @param string|AnyLazy $file
+     * @return Lazy\IncludeFile
+     */
     public function include(
-        string|AnyLazy $file
+        $file
     ) : Lazy\IncludeFile
     {
         return new Lazy\IncludeFile($file);
     }
 
+    /**
+     * @param string|AnyLazy $file
+     * @return Lazy\RequireFile
+     */
     public function require(
-        string|AnyLazy $file
+        $file
     ) : Lazy\RequireFile
     {
         return new Lazy\RequireFile($file);
     }
 
+    /**
+     * @param string|AnyLazy $class
+     * @param string $method
+     * @param mixed ...$arguments
+     * @return Lazy\StaticCall
+     */
     public function staticCall(
-        string|AnyLazy $class,
+        $class,
         string $method,
-        mixed ...$arguments
+        ...$arguments
     ) : Lazy\StaticCall
     {
         return new Lazy\StaticCall($class, $method, $arguments);

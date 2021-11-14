@@ -7,8 +7,11 @@ use stdClass;
 
 class Baz
 {
+    public stdClass $std;
+
     public function __construct(
-        public stdClass $std
+        stdClass $std
     ) {
+        $this->std = $std;
     }
 }

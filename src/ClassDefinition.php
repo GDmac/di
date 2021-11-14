@@ -5,6 +5,7 @@ namespace Capsule\Di;
 
 use Capsule\Di\Lazy\Lazy;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -12,6 +13,8 @@ use ReflectionUnionType;
 
 class ClassDefinition extends Definition
 {
+    protected ?string $class = null;
+
     protected array $arguments = [];
 
     protected array $extenders = [];
@@ -22,10 +25,16 @@ class ClassDefinition extends Definition
 
     protected ?ClassDefinition $inherit = null;
 
-    protected array $collatedArguments;
+    protected ?array $collatedArguments = null;
 
-    public function __construct(protected string $id)
+    protected string $id;
+
+    /**
+     * @throws Exception\NotFound
+     */
+    public function __construct(string $id)
     {
+        $this->id = $id;
         if (! class_exists($this->id)) {
             throw new Exception\NotFound("Class '{$this->id}' not found.");
         }
@@ -45,7 +54,7 @@ class ClassDefinition extends Definition
         }
     }
 
-    public function inherit(?Definitions $def) : static
+    public function inherit(?Definitions $def) : self
     {
         $parent = get_parent_class($this->id);
 
@@ -58,32 +67,49 @@ class ClassDefinition extends Definition
         return $this;
     }
 
-    public function argument(int|string $parameter, mixed $argument) : static
+    /**
+     * @param int|string $parameter
+     * @param mixed $argument
+     * @return $this
+     */
+    public function argument($parameter, $argument) : self
     {
         $position = $this->parameterNames[$parameter] ?? $parameter;
         $this->arguments[$position] = $argument;
         return $this;
     }
 
-    public function getArgument(int|string $parameter) : mixed
+    /**
+     * @param int|string $parameter
+     * @return mixed
+     */
+    public function getArgument($parameter)
     {
         $position = $this->parameterNames[$parameter] ?? $parameter;
         return $this->arguments[$position];
     }
 
-    public function hasArgument(int|string $parameter) : bool
+    /**
+     * @param int|string $parameter
+     * @return bool
+     */
+    public function hasArgument($parameter) : bool
     {
         $position = $this->parameterNames[$parameter] ?? $parameter;
         return array_key_exists($position, $this->arguments);
     }
 
-    public function &refArgument(int|string $parameter) : mixed
+    /**
+     * @param int|string $parameter
+     * @return mixed
+     */
+    public function &refArgument($parameter)
     {
         $position = $this->parameterNames[$parameter] ?? $parameter;
         return $this->arguments[$position];
     }
 
-    public function arguments(array $arguments) : static
+    public function arguments(array $arguments) : self
     {
         $this->arguments = [];
 
@@ -94,7 +120,10 @@ class ClassDefinition extends Definition
         return $this;
     }
 
-    public function class(?string $class) : static
+    /**
+     * @throws Exception\NotFound
+     */
+    public function class(?string $class) : self
     {
         if ($class === $this->id) {
             $class = null;
@@ -108,36 +137,52 @@ class ClassDefinition extends Definition
         throw new Exception\NotFound("Class '{$class}' not found.");
     }
 
-    public function method(string $method, mixed ...$arguments) : static
+    /**
+     * @param string $method
+     * @param mixed ...$arguments
+     * @return $this
+     */
+    public function method(string $method, ...$arguments) : self
     {
         $this->extenders[] = [__FUNCTION__, [$method, $arguments]];
         return $this;
     }
 
-    public function modify(callable $callable) : static
+    public function modify(callable $callable) : self
     {
         $this->extenders[] = [__FUNCTION__, $callable];
         return $this;
     }
 
-    public function decorate(callable $callable) : static
+    public function decorate(callable $callable) : self
     {
         $this->extenders[] = [__FUNCTION__, $callable];
         return $this;
     }
 
-    public function property(string $name, mixed $value) : static
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function property(string $name, $value) : self
     {
         $this->extenders[] = [__FUNCTION__, [$name, $value]];
         return $this;
     }
 
+    /**
+     * @throws Exception\NotAllowed|Exception\NotDefined|ReflectionException
+     */
     public function new(Container $container) : object
     {
         $object = parent::new($container);
         return $this->applyExtenders($container, $object);
     }
 
+    /**
+     * @throws Exception\NotAllowed|Exception\NotDefined|ReflectionException
+     */
     protected function instantiate(Container $container) : object
     {
         if ($this->factory !== null) {
@@ -167,6 +212,9 @@ class ClassDefinition extends Definition
         return new $class(...$arguments);
     }
 
+    /**
+     * @throws Exception\NotDefined|ReflectionException
+     */
     protected function getCollatedArguments(Container $container) : array
     {
         if (! isset($this->collatedArguments)) {

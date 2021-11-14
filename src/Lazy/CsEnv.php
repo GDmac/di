@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace Capsule\Di\Lazy;
 
 use Capsule\Di\Container;
+use Capsule\Di\Exception\NotDefined;
 
 class CsEnv extends Env
 {
-    public function __construct(
-        protected string $varname,
-        protected ?string $vartype = null
-    ) {
-    }
-
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     * @throws NotDefined
+     */
+    public function __invoke(Container $container)
     {
         $values = str_getcsv($this->getEnv());
 

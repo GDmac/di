@@ -12,16 +12,23 @@ abstract class Definition extends Lazy
 
     protected ?string $class = null;
 
-    protected mixed /* callable */ $factory = null;
+    /**
+     * @var mixed|null
+     */
+    protected /* callable */ $factory = null;
 
     protected bool $isInstantiable = false;
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return object
+     */
+    public function __invoke(Container $container) : object
     {
         return $this->new($container);
     }
 
-    public function factory(callable $factory) : static
+    public function factory(callable $factory) : self
     {
         $this->factory = $factory;
         return $this;

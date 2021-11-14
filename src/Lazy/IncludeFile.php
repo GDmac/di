@@ -7,12 +7,25 @@ use Capsule\Di\Container;
 
 class IncludeFile extends Lazy
 {
+    /**
+     * @var Lazy|string
+     */
+    protected $file;
+
+    /**
+     * @param string|Lazy $file
+     */
     public function __construct(
-        protected string|Lazy $file
+        $file
     ) {
+        $this->file = $file;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         $file = static::resolveArgument($container, $this->file);
         return include $file;

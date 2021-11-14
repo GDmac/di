@@ -10,6 +10,13 @@ function fake(string $word) : string
 
 class FunctionCallTest extends LazyTest
 {
+    public function test_internal_function()
+    {
+        $lazy = new FunctionCall('stripos', ['0123x5678', 'x']);
+        $actual = $lazy($this->container);
+        $this->assertSame(4, $actual);
+    }
+
     public function test()
     {
         $lazy = new FunctionCall('Capsule\Di\Lazy\fake', ['bar']);

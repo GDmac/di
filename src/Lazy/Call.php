@@ -7,11 +7,24 @@ use Capsule\Di\Container;
 
 class Call extends Lazy
 {
-    public function __construct(protected mixed /* callable */ $callable)
+    /**
+     * @var mixed
+     */
+    protected $callable;
+
+    /**
+     * @param mixed $callable
+     */
+    public function __construct(/* callable */ $callable)
     {
+        $this->callable = $callable;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         return ($this->callable)($container);
     }

@@ -7,15 +7,16 @@ use stdClass;
 
 class Gir
 {
+    public string $arg0;
     public ?string $arg1;
-
     public array $arg2;
 
     public function __construct(
-        public string $arg0,
+        string $arg0,
         string $arg1 = null,
         string ...$arg2
     ) {
+        $this->arg0 = $arg0;
         $this->arg1 = $arg1;
         $this->arg2 = $arg2;
     }

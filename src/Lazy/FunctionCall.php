@@ -7,13 +7,22 @@ use Capsule\Di\Container;
 
 class FunctionCall extends Lazy
 {
+    protected string $function;
+    protected array $arguments;
+
     public function __construct(
-        protected string $function,
-        protected array $arguments
+        string $function,
+        array $arguments
     ) {
+        $this->arguments = $arguments;
+        $this->function = $function;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         $arguments = static::resolveArguments($container, $this->arguments);
         return call_user_func($this->function, ...$arguments);

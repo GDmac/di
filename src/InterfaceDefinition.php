@@ -7,14 +7,24 @@ use Capsule\Di\Lazy\Lazy;
 
 class InterfaceDefinition extends Definition
 {
-    public function __construct(protected string $id)
+    protected ?string $class = null;
+    protected string $id;
+
+    /**
+     * @throws Exception\NotFound
+     */
+    public function __construct(string $id)
     {
+        $this->id = $id;
         if (! interface_exists($id)) {
             throw new Exception\NotFound("Interface '{$id}' not found.");
         }
     }
 
-    public function class(string $class) : static
+    /**
+     * @throws Exception\NotFound
+     */
+    public function class(string $class) : self
     {
         if (! class_exists($class)) {
             throw new Exception\NotFound("Class '{$class}' not found.");
@@ -24,7 +34,10 @@ class InterfaceDefinition extends Definition
         return $this;
     }
 
-    protected function instantiate(Container $container) : object
+    /**
+     * @throws Exception\NotDefined
+     */
+    public function instantiate(Container $container) : object
     {
         if ($this->factory !== null) {
             $factory = Lazy::resolveArgument($container, $this->factory);

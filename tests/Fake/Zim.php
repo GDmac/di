@@ -7,8 +7,17 @@ use stdClass;
 
 class Zim
 {
+    /**
+     * @var array|stdClass
+     */
+    public $union;
+
+    /**
+     * @param array|stdClass $union
+     */
     public function __construct(
-        public array|stdClass $union
+        $union
     ) {
+        $this->union = $union;
     }
 }

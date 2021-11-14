@@ -7,11 +7,24 @@ use Capsule\Di\Container;
 
 class CallableGet extends Lazy
 {
-    public function __construct(protected string|Lazy $id)
+    /**
+     * @var Lazy|string
+     */
+    protected $id;
+
+    /**
+     * @param string|Lazy $id
+     */
+    public function __construct($id)
     {
+        $this->id = $id;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         return function () use ($container) {
             $id = static::resolveArgument($container, $this->id);

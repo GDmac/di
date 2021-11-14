@@ -7,11 +7,24 @@ use Capsule\Di\Container;
 
 class NewInstance extends Lazy
 {
-    public function __construct(protected string|Lazy $id)
+    /**
+     * @var Lazy|string
+     */
+    protected $id;
+
+    /**
+     * @param string|Lazy $id
+     */
+    public function __construct($id)
     {
+        $this->id = $id;
     }
 
-    public function __invoke(Container $container) : mixed
+    /**
+     * @param Container $container
+     * @return mixed
+     */
+    public function __invoke(Container $container)
     {
         $id = static::resolveArgument($container, $this->id);
         return $container->new($id);
