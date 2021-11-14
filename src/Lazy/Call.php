@@ -8,7 +8,7 @@ use Capsule\Di\Container;
 class Call extends Lazy
 {
     /**
-     * @var mixed
+     * @var callable
      */
     protected $callable;
 
@@ -17,6 +17,10 @@ class Call extends Lazy
      */
     public function __construct(/* callable */ $callable)
     {
+        if (!is_callable($callable, true)) {
+            throw new \Exception('not a callable');
+        }
+
         $this->callable = $callable;
     }
 

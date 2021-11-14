@@ -29,7 +29,7 @@ class ArrayValues extends Lazy implements ArrayAccess, Countable, IteratorAggreg
     }
 
     /**
-     * @param mixed $offset
+     * @param int|string $offset
      * @return bool
      */
     public function offsetExists($offset) : bool

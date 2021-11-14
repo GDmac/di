@@ -41,11 +41,20 @@ class InterfaceDefinition extends Definition
     {
         if ($this->factory !== null) {
             $factory = Lazy::resolveArgument($container, $this->factory);
+
+            if (!is_callable($factory, true)) {
+                throw new \Exception('not a callable');
+            }
+
             return $factory($container);
         }
 
         if ($this->class !== null) {
-            return $container->new($this->class);
+            $object = $container->new($this->class);
+            if (! is_object($object)) {
+                throw new \Exception('class is not valid');
+            }
+            return $object;
         }
 
         throw new Exception\NotDefined(

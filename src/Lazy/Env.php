@@ -40,7 +40,7 @@ class Env extends Lazy
     }
 
     /**
-     * @return mixed
+     * @return string
      * @throws Exception\NotDefined
      */
     protected function getEnv() : string

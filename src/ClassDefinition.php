@@ -181,17 +181,28 @@ class ClassDefinition extends Definition
     }
 
     /**
-     * @throws Exception\NotAllowed|Exception\NotDefined|ReflectionException
+     * @param Container $container
+     * @return object
+     * @throws Exception\NotAllowed
+     * @throws Exception\NotDefined
+     * @throws ReflectionException
      */
     protected function instantiate(Container $container) : object
     {
         if ($this->factory !== null) {
             $factory = Lazy::resolveArgument($container, $this->factory);
+            if (!is_callable($factory, true)) {
+                throw new \Exception('not a callable');
+            }
             return $factory($container);
         }
 
         if ($this->class !== null) {
-            return $container->new($this->class);
+            $object = $container->new($this->class);
+            if (! is_object($object)) {
+                throw new \Exception('class is not valid');
+            }
+            return $object;
         }
 
         $arguments = $this->getCollatedArguments($container);
@@ -221,7 +232,7 @@ class ClassDefinition extends Definition
             $this->collateArguments($container);
         }
 
-        return $this->collatedArguments;
+        return $this->collatedArguments ?? [];
     }
 
     protected function collateArguments(Container $container) : void
