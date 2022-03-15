@@ -30,8 +30,9 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     * @return mixed
+     * @template RequestedType
+     * @param class-string<RequestedType>|string $id
+     * @return RequestedType|mixed
      */
     public function get(string $id)
     {
@@ -75,8 +76,9 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string $id
-     * @return mixed
+     * @template RequestedType
+     * @param class-string<RequestedType>|string $id
+     * @return RequestedType|mixed
      */
     public function new(string $id)
     {
