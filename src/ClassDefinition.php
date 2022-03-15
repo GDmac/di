@@ -333,7 +333,7 @@ class ClassDefinition extends Definition
         $name = $parameter->getName();
         $type = $parameter->getType();
 
-        if ($type instanceof ReflectionUnionType) {
+        if ($type === null || $type instanceof ReflectionUnionType) {
             return new Exception\NotDefined(
                 "Union typed argument {$position} (\${$name}) "
                 . "for class definition '{$this->id}' is not defined."

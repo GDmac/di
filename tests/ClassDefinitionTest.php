@@ -133,14 +133,12 @@ class ClassDefinitionTest extends DefinitionTest
     public function testArgument_missingUnionType()
     {
         $definition = new ClassDefinition(Fake\Zim::CLASS);
-        $this->expectException(Exception\NotDefined::CLASS);
-        $this->expectExceptionMessage(
-            // PHP8
-            // "Union typed argument 0 (\$union) for class definition 'Capsule\Di\Fake\Zim' is not defined."
-            // PHP7
-            "Required argument 0 (\$union) for class definition 'Capsule\Di\Fake\Zim' is not defined."
-        );
-        $this->actual($definition);
+        $this->assertNotInstantiable($definition, [
+            [
+                Exception\NotDefined::CLASS,
+                "Union typed argument 0 (\$union) for class definition 'Capsule\Di\Fake\Zim' is not defined."
+            ]
+        ]);
     }
 
     public function testArgument_typeDoesNotExist()
@@ -153,7 +151,6 @@ class ClassDefinitionTest extends DefinitionTest
             ]
         ]);
     }
-
 
     public function testArgument_unionType()
     {
