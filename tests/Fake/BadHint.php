@@ -7,8 +7,11 @@ use stdClass;
 
 class BadHint
 {
+    private Nonesuch $nonesuch;
+
     public function __construct(
-        public Nonesuch $nonesuch,
+        Nonesuch $nonesuch
     ) {
+        $this->nonesuch = $nonesuch;
     }
 }

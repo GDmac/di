@@ -52,10 +52,7 @@ abstract class Definition extends Lazy
         try {
             return $this->instantiate($container);
         } catch (Throwable $e) {
-            throw new Exception\NotInstantiated(
-                "Could not instantiate {$this->id}",
-                previous: $e
-            );
+            throw new Exception\NotInstantiated("Could not instantiate {$this->id}", 0, $e);
         }
     }
 
